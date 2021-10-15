@@ -34,4 +34,19 @@ describe('[POST] /auth/register', () => {
   
 })
 
+describe('[POST] /auth/login', () => {
+  let res
+  beforeEach(async () => {
+    res = await request(server).post('/auth/register').send({ name: 'Mariana' })
+  })
+  it('responds with 201 logged In', async () => {
+    expect(res.status).toBe(201)
+  })
+  it('responds with the correct data structure', async () => {
+    expect(res.body).toMatchObject([
+      { id: 1, username: 'Mariana' },
+    ])
+  })
+})
+
 
