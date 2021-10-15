@@ -1,11 +1,10 @@
-const {findBy } = require('../jokes/')
+const {findBy } = require('../users/users-model')
 
 const checkUsernameExists = async (req, res, next) => {
-   
       try {
         const [user] = await findBy({username: req.body.username})
         if (!user) {
-          next({status: 401, message: 'Invalid credentials'})
+          next({status: 401, message: 'invalid credentials'})
         } else {
           req.user = user
           next()
@@ -14,5 +13,9 @@ const checkUsernameExists = async (req, res, next) => {
         next(err)
       }
   
+  }
+
+  module.exports = {
+    checkUsernameExists
   }
   

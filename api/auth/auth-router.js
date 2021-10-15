@@ -1,6 +1,6 @@
 const router = require('express').Router();
-
-const { JWT_SECRET } = require("../secrets/index"); // use this secret!
+const { checkUsernameExists } = require('../middleware/auth-middleware')
+const { JWT_SECRET } = require("../secrets/index"); 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../users/users-model')
@@ -42,7 +42,7 @@ router.post('/register', (req, res, next) => {
         .catch(next)
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', checkUsernameExists, (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -69,17 +69,16 @@ router.post('/login', (req, res, next) => {
       if (bcrypt.compareSync(req.body.password, req.user.password)) {
         const token = buildToken(req.user)
         res.json({
-          message: `${req.user.username} is back!`,
+          message: `Welcome, ${req.user.username}`,
           token})
       } else {
-        next({status: 401, message: 'Invalid credentials'})
+        next({status: 401, message: 'invalid credentials'})
       }
 });
 
 function buildToken(user) {
   const payload = {
-    subject: user.user_id,
-    role_name: user.role_name,
+    subject: user.id,
     username: user.username
   }
   const options = {
